@@ -43,6 +43,13 @@ def home(request):
     for schedule in schedules:
         schedule.calculated_status = schedule.get_status()
 
+    maintenance_metrics = dict.fromkeys(
+        (status for status, _label in MaintenanceSchedule.MaintenanceStatus.choices),
+        0,
+    )
+    for schedule in schedules:
+        maintenance_metrics[schedule.calculated_status] += 1
+
     schedules = [
         schedule
         for schedule in schedules
@@ -75,6 +82,32 @@ def home(request):
         "pending_reminders": Reminder.objects.filter(
             estado=Reminder.Status.PENDIENTE
         ).count(),
+        "order_chart_data": {
+            "labels": [
+                "Recibidas",
+                "En proceso",
+                "Detenidas por repuestos",
+                "Terminadas",
+            ],
+            "values": [
+                order_metrics["received"],
+                order_metrics["in_progress"],
+                order_metrics["stopped"],
+                order_metrics["finished"],
+            ],
+            "colors": ["#d58a32", "#398b83", "#bd6247", "#4f9063"],
+        },
+        "order_chart_total": sum(order_metrics.values()),
+        "maintenance_chart_data": {
+            "labels": ["Vencidos", "Próximos", "Al día"],
+            "values": [
+                maintenance_metrics[MaintenanceSchedule.MaintenanceStatus.VENCIDO],
+                maintenance_metrics[MaintenanceSchedule.MaintenanceStatus.PROXIMO],
+                maintenance_metrics[MaintenanceSchedule.MaintenanceStatus.AL_DIA],
+            ],
+            "colors": ["#bd5649", "#d58a32", "#4f9063"],
+        },
+        "maintenance_chart_total": sum(maintenance_metrics.values()),
     }
 
     return render(request, "home.html", context)

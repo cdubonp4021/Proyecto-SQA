@@ -121,14 +121,22 @@
                         Próxima fecha
                     </dt>
                     <dd class="col-sm-7">
-                        {{ reminder.maintenance_schedule.proxima_fecha|default:"-" }}
+                        {% if reminder.maintenance_schedule.ultima_fecha and reminder.maintenance_schedule.intervalo_dias and reminder.maintenance_schedule.proxima_fecha %}
+                            {{ reminder.maintenance_schedule.ultima_fecha|date:"d/m/Y" }} + {{ reminder.maintenance_schedule.intervalo_dias }} días = {{ reminder.maintenance_schedule.proxima_fecha|date:"d/m/Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
                     </dd>
 
                     <dt class="col-sm-5 text-secondary">
                         Próximo kilometraje
                     </dt>
                     <dd class="col-sm-7">
-                        {{ reminder.maintenance_schedule.proximo_kilometraje|default:"-" }}
+                        {% if reminder.maintenance_schedule.ultimo_kilometraje != None and reminder.maintenance_schedule.intervalo_km and reminder.maintenance_schedule.proximo_kilometraje != None %}
+                            {{ reminder.maintenance_schedule.ultimo_kilometraje }} + {{ reminder.maintenance_schedule.intervalo_km }} = {{ reminder.maintenance_schedule.proximo_kilometraje }} km
+                        {% else %}
+                            -
+                        {% endif %}
                     </dd>
 
                     <dt class="col-sm-5 text-secondary">

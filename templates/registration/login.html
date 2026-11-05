@@ -3,21 +3,40 @@
 {% block title %}Iniciar sesión | Taller{% endblock %}
 
 {% block content %}
-<main class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            <h1 class="h3 mb-4">Iniciar sesión</h1>
+<div class="auth-layout">
+    <section class="auth-brand-panel" aria-label="TallerService">
+        <div class="auth-brand-row">
+            <span class="brand-mark">TS</span>
+            <span class="auth-brand-name">Taller<span class="brand-accent">Service</span></span>
+        </div>
+        <div class="auth-brand-copy">
+            <p class="eyebrow mb-3">Gestión de taller</p>
+            <h2>Servicio claro.<br>Trabajo en orden.</h2>
+            <p class="auth-brand-note">Sistema de control de servicios</p>
+        </div>
+        <p class="auth-brand-footer mb-0">Acceso privado</p>
+    </section>
+
+    <section class="auth-form-panel" aria-labelledby="login-title">
+        <div class="auth-form-content">
+            <p class="eyebrow mb-2">Bienvenido</p>
+            <h1 class="auth-title" id="login-title">Iniciar sesión</h1>
+            <p class="auth-intro">Ingresa con tu cuenta del sistema.</p>
             {% if form.non_field_errors %}
                 <div class="alert alert-danger" role="alert">
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
-            <form method="post">
+            <form method="post" class="auth-form">
                 {% csrf_token %}
-                <div class="mb-3">
+                {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+                <div class="mb-4">
                     <label class="form-label" for="id_username">Usuario</label>
                     <input class="form-control{% if form.username.errors %} is-invalid{% endif %}"
-                           type="text" name="username" id="id_username" required autofocus>
+                           type="text" name="username" id="id_username"
+                           value="{{ form.username.value|default_if_none:'' }}"
+                           autocomplete="username" required autofocus
+                           {% if form.username.errors %}aria-invalid="true"{% endif %}>
                     {% for error in form.username.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
@@ -25,14 +44,16 @@
                 <div class="mb-3">
                     <label class="form-label" for="id_password">Contraseña</label>
                     <input class="form-control{% if form.password.errors %} is-invalid{% endif %}"
-                           type="password" name="password" id="id_password" required>
+                           type="password" name="password" id="id_password"
+                           autocomplete="current-password" required
+                           {% if form.password.errors %}aria-invalid="true"{% endif %}>
                     {% for error in form.password.errors %}
                         <div class="invalid-feedback">{{ error }}</div>
                     {% endfor %}
                 </div>
-                <button class="btn btn-primary" type="submit">Iniciar sesión</button>
+                <button class="btn btn-primary auth-submit" type="submit">Entrar al sistema</button>
             </form>
         </div>
-    </div>
-</main>
+    </section>
+</div>
 {% endblock %}

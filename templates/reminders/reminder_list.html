@@ -213,6 +213,18 @@
                                 {{ reminder.get_tipo_display }}
                             </span>
 
+                            {% if reminder.maintenance_schedule.ultimo_kilometraje != None and reminder.maintenance_schedule.intervalo_km and reminder.maintenance_schedule.proximo_kilometraje != None %}
+                                <span class="small text-secondary d-block">
+                                    Km: {{ reminder.maintenance_schedule.ultimo_kilometraje }} + {{ reminder.maintenance_schedule.intervalo_km }} = {{ reminder.maintenance_schedule.proximo_kilometraje }} km
+                                </span>
+                            {% endif %}
+
+                            {% if reminder.maintenance_schedule.ultima_fecha and reminder.maintenance_schedule.intervalo_dias and reminder.maintenance_schedule.proxima_fecha %}
+                                <span class="small text-secondary d-block">
+                                    Fecha: {{ reminder.maintenance_schedule.ultima_fecha|date:"d/m/Y" }} + {{ reminder.maintenance_schedule.intervalo_dias }} días = {{ reminder.maintenance_schedule.proxima_fecha|date:"d/m/Y" }}
+                                </span>
+                            {% endif %}
+
 
                             {% if reminder.maintenance_schedule.activo %}
 

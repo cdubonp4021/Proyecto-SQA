@@ -59,6 +59,44 @@
     </article>
 </section>
 
+<section class="chart-grid mt-4" aria-label="Gráficas de actividad">
+    <article class="chart-panel">
+        <div class="chart-heading">
+            <div>
+                <p class="eyebrow mb-1">Trabajo en curso</p>
+                <h3 class="chart-title">Órdenes abiertas</h3>
+            </div>
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'service_orders:list' %}">Ver órdenes</a>
+        </div>
+        {% if order_chart_total %}
+            <figure class="chart-canvas-wrap chart-doughnut-wrap" aria-labelledby="orders-chart-caption">
+                <canvas id="orders-chart"></canvas>
+                <figcaption class="visually-hidden" id="orders-chart-caption">Distribución de las órdenes abiertas por estado.</figcaption>
+            </figure>
+        {% else %}
+            <p class="chart-empty mb-0">No hay órdenes abiertas para graficar.</p>
+        {% endif %}
+    </article>
+
+    <article class="chart-panel">
+        <div class="chart-heading">
+            <div>
+                <p class="eyebrow mb-1">Prevención</p>
+                <h3 class="chart-title">Estado de mantenimiento</h3>
+            </div>
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'maintenance:list' %}">Ver planes</a>
+        </div>
+        {% if maintenance_chart_total %}
+            <figure class="chart-canvas-wrap chart-bar-wrap" aria-labelledby="maintenance-chart-caption">
+                <canvas id="maintenance-chart"></canvas>
+                <figcaption class="visually-hidden" id="maintenance-chart-caption">Cantidad de planes activos vencidos, próximos y al día.</figcaption>
+            </figure>
+        {% else %}
+            <p class="chart-empty mb-0">No hay planes de mantenimiento activos.</p>
+        {% endif %}
+    </article>
+</section>
+
 <section class="card border-0 shadow-sm mt-4">
     <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -87,4 +125,67 @@
         </div>
     </div>
 </section>
+
+{{ order_chart_data|json_script:"order-chart-data" }}
+{{ maintenance_chart_data|json_script:"maintenance-chart-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js" integrity="sha384-T/4KgSWuZEPozpPz7rnnp/5lDSnpY1VPJCojf1S81uTHS1E38qgLfMgVsAeRCWc4" crossorigin="anonymous"></script>
+<script>
+    const orderChartData = JSON.parse(document.getElementById("order-chart-data").textContent);
+    const maintenanceChartData = JSON.parse(document.getElementById("maintenance-chart-data").textContent);
+    const orderCanvas = document.getElementById("orders-chart");
+    const maintenanceCanvas = document.getElementById("maintenance-chart");
+
+    if (window.Chart && orderCanvas) {
+        new Chart(orderCanvas, {
+            type: "doughnut",
+            data: {
+                labels: orderChartData.labels,
+                datasets: [{
+                    data: orderChartData.values,
+                    backgroundColor: orderChartData.colors,
+                    borderWidth: 0,
+                    hoverOffset: 5,
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                cutout: "68%",
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: { usePointStyle: true, padding: 18 },
+                    },
+                },
+            },
+        });
+    }
+
+    if (window.Chart && maintenanceCanvas) {
+        new Chart(maintenanceCanvas, {
+            type: "bar",
+            data: {
+                labels: maintenanceChartData.labels,
+                datasets: [{
+                    data: maintenanceChartData.values,
+                    backgroundColor: maintenanceChartData.colors,
+                    borderRadius: 4,
+                    barThickness: 24,
+                }],
+            },
+            options: {
+                indexAxis: "y",
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: { precision: 0, stepSize: 1 },
+                        grid: { color: "#e7ecee" },
+                    },
+                    y: { grid: { display: false } },
+                },
+            },
+        });
+    }
+</script>
 {% endblock %}

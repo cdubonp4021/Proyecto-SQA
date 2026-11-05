@@ -124,6 +124,22 @@ class ReminderViewsTests(TestCase):
 			f'href="/mantenimiento/{self.schedule.pk}/"',
 		)
 
+	def test_reminder_displays_next_service_calculations(self):
+		self.schedule.ultimo_kilometraje = 15500
+		self.schedule.intervalo_km = 3000
+		self.schedule.ultima_fecha = date(2026, 9, 5)
+		self.schedule.intervalo_dias = 60
+		self.schedule.save()
+		reminder = self.create_reminder()
+
+		detail_response = self.client.get(f"/recordatorios/{reminder.pk}/")
+		list_response = self.client.get("/recordatorios/")
+
+		self.assertContains(detail_response, "15500 + 3000 = 18500 km")
+		self.assertContains(detail_response, "05/09/2026 + 60 días = 04/11/2026")
+		self.assertContains(list_response, "15500 + 3000 = 18500 km")
+		self.assertContains(list_response, "05/09/2026 + 60 días = 04/11/2026")
+
 	def test_edit_reminder(self):
 		reminder = self.create_reminder()
 		data = {**self.reminder_data, "mensaje": "Mensaje actualizado"}
