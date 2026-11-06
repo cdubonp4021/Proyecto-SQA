@@ -1,14 +1,30 @@
-# Sistema de control de servicios
+# Sistema de control de servicios — TallerService
 
-Guía para preparar y ejecutar el proyecto en una computadora nueva con Windows.
+[![Pruebas y calidad](https://github.com/cdubonp4021/Proyecto-SQA/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/cdubonp4021/Proyecto-SQA/actions/workflows/tests.yml)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=cdubonp4021_Proyecto-SQA&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=cdubonp4021_Proyecto-SQA)
+[![Cobertura](https://sonarcloud.io/api/project_badges/measure?project=cdubonp4021_Proyecto-SQA&metric=coverage)](https://sonarcloud.io/summary/new_code?id=cdubonp4021_Proyecto-SQA)
+
+TallerService es una aplicación web para apoyar la operación de un taller automotriz. Permite gestionar propietarios, vehículos, órdenes de servicio, mantenimiento preventivo, recordatorios, mecánicos e historial.
+
+Esta guía explica cómo preparar y ejecutar el proyecto en una computadora nueva con Windows.
+
+## Tecnologías
+
+- Python y Django
+- PostgreSQL 17
+- Docker Compose
+- GitHub Actions
+- Ruff
+- Coverage.py
+- SonarQube Cloud
 
 ## Requisitos
 
 Instala estas herramientas antes de continuar:
 
-- **Git:** https://git-scm.com/downloads
-- **Python 3.10 o superior:** https://www.python.org/downloads/
-- **Docker Desktop:** https://www.docker.com/products/docker-desktop/
+- [Git](https://git-scm.com/downloads)
+- [Python 3.10 o superior](https://www.python.org/downloads/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 Durante la instalación de Python, habilita la opción **Add Python to PATH**. Al terminar, abre Docker Desktop y espera a que indique que está iniciado.
 
@@ -19,101 +35,3 @@ Abre PowerShell y ejecuta:
 ```powershell
 git clone https://github.com/cdubonp4021/Proyecto-SQA.git
 cd Proyecto-SQA
-```
-
-## Configurar el entorno
-
-Crea el entorno virtual e instala las dependencias:
-
-```powershell
-py -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-```
-
-Crea el archivo local de variables de entorno:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-`.env` contiene valores solo para desarrollo local y no se debe subir al repositorio.
-
-## Iniciar PostgreSQL
-
-Con Docker Desktop iniciado, ejecuta:
-
-```powershell
-docker compose up -d postgres
-docker compose ps
-```
-
-Espera a que el contenedor aparezca como `Up`. Confirma que PostgreSQL ya acepta conexiones:
-
-```powershell
-docker compose exec postgres pg_isready -U postgres -d taller
-```
-
-Si todavía no está listo, repite `pg_isready` después de unos segundos.
-
-### Ver la base de datos en el navegador (opcional)
-
-Inicia pgAdmin, la interfaz web para PostgreSQL:
-
-```powershell
-docker compose up -d pgadmin
-```
-
-Abre `http://127.0.0.1:5050/` e inicia sesión con el correo `admin@example.com` y el valor de `POSTGRES_PASSWORD` definido en `.env`.
-
-En pgAdmin, registra un servidor con estos datos de conexión:
-
-- **Host:** `postgres`
-- **Puerto:** `5432`
-- **Base de mantenimiento:** valor de `POSTGRES_DB` en `.env` (normalmente `taller`)
-- **Usuario y contraseña:** valores de `POSTGRES_USER` y `POSTGRES_PASSWORD` en `.env`
-
-El volumen `pgadmin_data` conserva la configuración de pgAdmin. El acceso web está limitado a esta computadora.
-
-## Preparar y ejecutar Django
-
-Aplica las migraciones, crea un usuario de acceso y arranca el servidor:
-
-```powershell
-.\.venv\Scripts\python.exe manage.py migrate
-.\.venv\Scripts\python.exe manage.py createsuperuser
-.\.venv\Scripts\python.exe manage.py runserver
-```
-
-`createsuperuser` solicitará nombre de usuario y contraseña. No muestra los caracteres de la contraseña mientras se escribe.
-
-Abre la aplicación en:
-
-```text
-http://127.0.0.1:8000/
-```
-
-El acceso administrativo está en:
-
-```text
-http://127.0.0.1:8000/admin/
-```
-
-## Detener y volver a iniciar
-
-Para detener Django, vuelve a la terminal del servidor y presiona `Ctrl+C`. Para detener PostgreSQL conservando la base de datos:
-
-```powershell
-docker compose down
-```
-
-En el siguiente uso, vuelve a iniciar PostgreSQL con `docker compose up -d postgres` y luego ejecuta `runserver`. Los datos persisten en un volumen local de Docker. **No uses `docker compose down -v`** salvo que quieras borrar ese volumen y todos sus datos.
-
-## Datos en otras computadoras
-
-Git descarga el código, pero no copia los datos de PostgreSQL ni los usuarios creados en otra computadora. Cada instalación tiene su propia base de datos y debe crear su propio superusuario. Para compartir registros existentes, se necesita exportar e importar un respaldo de PostgreSQL por separado.
-
-## Solución rápida de problemas
-
-- Si PowerShell no reconoce `docker`, inicia Docker Desktop y abre una terminal nueva.
-- Si el puerto configurado en `POSTGRES_PORT` está ocupado, cambia ese valor en `.env`; Compose usará el mismo puerto para publicar PostgreSQL.
-- Si `py` no se reconoce, reinstala Python activando **Add Python to PATH**.
