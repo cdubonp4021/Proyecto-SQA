@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 from io import StringIO
-from urllib.parse import parse_qs, urlparse
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlparse
 
 from django.contrib import admin
 from django.contrib.auth import get_user_model

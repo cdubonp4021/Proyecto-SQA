@@ -32,6 +32,9 @@ jobs:
       - name: Test
         run: python -m coverage run --source=core,owners,vehicles,service_orders,maintenance,reminders --omit="*/migrations/*,*/tests.py,*/tests/*,*/test_*.py" manage.py test --settings=config.settings_test
 
+      - name: Analyze - lint
+        run: python -m ruff check core owners vehicles service_orders maintenance reminders
+
       - name: Analyze - quality gate de cobertura
         run: python -m coverage report -m --fail-under=60
 

@@ -3,10 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import VehicleForm
-from .models import Vehicle
 from maintenance.models import MaintenanceSchedule
 from service_orders.models import ServiceOrder
+
+from .forms import VehicleForm
+from .models import Vehicle
 
 
 @login_required

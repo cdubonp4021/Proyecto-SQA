@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
 from django.shortcuts import render
 
-from owners.models import Owner
 from maintenance.models import MaintenanceSchedule
+from owners.models import Owner
 from reminders.models import Reminder
 from service_orders.models import ServiceOrder
 from vehicles.models import Vehicle

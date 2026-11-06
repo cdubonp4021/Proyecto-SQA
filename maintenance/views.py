@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import MaintenanceScheduleForm
 from .models import MaintenanceSchedule
 
-
 STATUS_PRIORITY = {
 	MaintenanceSchedule.MaintenanceStatus.VENCIDO: 0,
 	MaintenanceSchedule.MaintenanceStatus.PROXIMO: 1,

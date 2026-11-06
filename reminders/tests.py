@@ -1,6 +1,6 @@
 from datetime import date, timedelta
-from urllib.parse import quote
 from unittest.mock import patch
+from urllib.parse import quote
 
 from django.contrib import admin
 from django.contrib.auth import get_user_model
@@ -8,8 +8,8 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 
-from owners.models import Owner
 from maintenance.models import MaintenanceSchedule
+from owners.models import Owner
 from vehicles.models import Vehicle
 
 from .models import Reminder
