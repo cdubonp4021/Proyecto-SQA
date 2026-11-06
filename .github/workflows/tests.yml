@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Descargar el proyecto
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Preparar Python
         uses: actions/setup-python@v7
@@ -48,3 +50,9 @@ jobs:
           else
             echo "No se generó el archivo de cobertura." >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: SonarQube Cloud - análisis
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: SonarSource/sonarqube-scan-action@v8.3.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
