@@ -1,0 +1,29 @@
+name: Pruebas
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_DEBUG: "True"
+      DJANGO_SECRET_KEY: "clave-solo-para-pruebas-automatizadas"
+    steps:
+      - name: Descargar el proyecto
+        uses: actions/checkout@v7
+
+      - name: Preparar Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Ejecutar pruebas
+        run: python manage.py test --settings=config.settings_test
