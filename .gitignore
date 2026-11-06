@@ -9,3 +9,9 @@ venv/
 staticfiles/
 .idea/
 .vscode/
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+coverage-report.txt 
