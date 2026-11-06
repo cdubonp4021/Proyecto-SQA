@@ -17,8 +17,8 @@ Durante la instalación de Python, habilita la opción **Add Python to PATH**. A
 Abre PowerShell y ejecuta:
 
 ```powershell
-git clone https://github.com/TheJontacher/seminario.git
-cd seminario
+git clone https://github.com/cdubonp4021/Proyecto-SQA.git
+cd Proyecto-SQA
 ```
 
 ## Configurar el entorno
